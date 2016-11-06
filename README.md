@@ -9,4 +9,5 @@
 - Le gagnant est celui dont le total est le plus bas.
 
 Projet en C, IUT de Belfort-Montbéliard
+
 Copyright (c) - Raphaël RAGOOMUNDUN, Nicolas IUNG
