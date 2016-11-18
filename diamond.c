@@ -13,12 +13,12 @@ board_t* createBoard()
 	board_t* b = NULL;
 	int i, j;
 	
-	if((b = malloc(sizeof(board_t)) == NULL)
+	if((b = malloc(sizeof(board_t))) == NULL)
 	{
 		perror("malloc createBoard");
 		return NULL;
 	}
-	
+
 	clearBoard(b);
 	
 	for(i = 0; i < 13; i++)
@@ -26,7 +26,7 @@ board_t* createBoard()
 		for(j = 0; j < 6; j++)
 			b->neighbors[i][j] = NO_NEIGHBOR;
 	}
-
+	
 
 	// define neighbors for cell 0
 	
@@ -127,10 +127,10 @@ void clearBoard(board_t* b)
 	int i;
 	
 	for(i = 0; i < 13; i++)
-		b.board[i] = VOID_CELL;
+		b->board[i] = VOID_CELL;
 		
-	blueScore = 0;
-	redScore = 0;
+	b->blueScore = 0;
+	b->redScore = 0;
 }
 
 int voidCellIndex(board_t* b)
@@ -159,10 +159,10 @@ void computeScore(board_t* b)
 	{
 		if(b->neighbors[idVoid][i] != NO_NEIGHBOR)
 		{
-			if(b->board[b->neighbors[idVoid][i]] <= 6)
-				b->blueScore += b->board[b->neighbors[idVoid][i]];
+			if(b->board[(int)b->neighbors[idVoid][i]] <= 6)
+				b->blueScore += b->board[(int)b->neighbors[idVoid][i]];
 			else
-				b->redScore += (b->board[b->neighbors[idVoid][i]] - 6);
+				b->redScore += (b->board[(int)b->neighbors[idVoid][i]] - 6);
 
 		}
 	}
@@ -193,7 +193,7 @@ node_t* createNode(int idCell, int turn)
 	
 	if(turn == 1)
 	{
-		if((n->children = malloc(sizeof(node_t)) == NULL)
+		if((n->children = malloc(sizeof(node_t))) == NULL)
 		{
 			perror("malloc n->children 1 createNode");
 			return NULL;
@@ -201,7 +201,7 @@ node_t* createNode(int idCell, int turn)
 	}
 	else if(turn < 12)
 	{
-		if((n->children = malloc((13 - turn) * sizeof(node_t)) == NULL)
+		if((n->children = malloc((13 - turn) * sizeof(node_t))) == NULL)
 		{
 			perror("malloc n->children 2 createNode");
 			return NULL;
@@ -221,7 +221,7 @@ node_t* addChild(node_t* n, int idCell)
 	node_t* child = NULL;
 
 	child = createNode(idCell, n->turn + 1);
-	n->children[n->nbChildren] = child;
+	n->children[(int)n->nbChildren] = child;
 	n->nbChildren++;
 
 	return child;
@@ -247,26 +247,66 @@ tree_t* createTree()
 
 void setFirstBlueChoice(tree_t* t, board_t* b, int idCell)
 {
+	t->root = createNode(idCell, 1);
+	setPawn(b, idCell, (char)1);
 }
-
+	
 void setFirstRedChoice(tree_t* t, board_t* b, int idCell)
 {
-	/* A COMPLETER : cf. canevas Java
-	 */  
+	addChild(t->root, idCell);
+	setPawn(b, idCell, (char)7);
 }
 
 void buildTree(tree_t* t, board_t* b)
 {
-	/* A COMPLETER : cf. canevas Java
-	*/
+	node_t *n;
+	nbConfigurations = 0;
+	
+	n = t->root->children[0];
+	computePossibilities(n, b);
+	
+	printf(" done.\n");
 }
 
 void computePossibilities(node_t* n, board_t* b)
 {
-
-	/* A COMPLETER : cf. canevas Java
-	*/
-
+	if(n->turn == 12)
+	{
+		computeScore(b);
+		
+		int r = b->redScore;
+		int b_ = b->blueScore;
+		
+		if(b_ == r)
+			n->result = DRAW_PARTY;
+		else if(b_ < r)
+			n->result = BLUE_WINS;
+		else
+			n->result = RED_WINS;
+			
+		nbConfigurations++;
+		
+		if(!(nbConfigurations % 1000000))
+			printf(".");
+			
+		return;
+	}
+	
+	int nextPawnValue = (n->turn + 2) / 2;
+	
+	if(!(n->turn + 1) % 2)
+		nextPawnValue += 6;
+		
+	for(int i = 0; i < 13; i++)
+	{
+		if(b->board[i] == VOID_CELL)
+		{
+			setPawn(b, i, (char)nextPawnValue);
+			node_t *child = addChild(n, i);
+			computePossibilities(child, b);
+			setPawn(b, i, VOID_CELL);
+		}
+	}
 }
 
 int computeBlueVictories(node_t* n)
