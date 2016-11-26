@@ -135,17 +135,15 @@ void clearBoard(board_t* b)
 
 int voidCellIndex(board_t* b)
 {
-	int id = -1, i;
+	int i;
 	
 	for(i = 0; i < 13; i++)
 	{
 		if(b->board[i] == VOID_CELL)
-			return i;
-			
-		return -1;
+			return i;			
 	}
 	
-	return id;
+	return -1;
 }
 
 void computeScore(board_t* b)
@@ -191,9 +189,15 @@ node_t* createNode(int idCell, int turn)
 	n->idCell = (char)idCell;
 	n->turn = (char)turn;
 	
+	if((n->children = malloc(sizeof(node_t*))) == NULL)
+	{
+		perror("malloc n->children createNode");
+		return NULL;
+	}
+	
 	if(turn == 1)
 	{
-		if((n->children = malloc(sizeof(node_t))) == NULL)
+		if((*n->children = calloc(1, sizeof(node_t))) == NULL)
 		{
 			perror("malloc n->children 1 createNode");
 			return NULL;
@@ -201,14 +205,14 @@ node_t* createNode(int idCell, int turn)
 	}
 	else if(turn < 12)
 	{
-		if((n->children = malloc((13 - turn) * sizeof(node_t))) == NULL)
+		if((*n->children = calloc((13 - turn), sizeof(node_t))) == NULL)
 		{
 			perror("malloc n->children 2 createNode");
 			return NULL;
 		}
 	}
 	else
-		n->children = NULL;
+		*n->children = NULL;
 		
 	n->nbChildren = 0;
 	n->result = NO_RESULT;
@@ -218,13 +222,10 @@ node_t* createNode(int idCell, int turn)
 
 node_t* addChild(node_t* n, int idCell)
 {
-	node_t* child = NULL;
-
-	child = createNode(idCell, n->turn + 1);
-	n->children[(int)n->nbChildren] = child;
+	n->children[(int)n->nbChildren] = createNode(idCell, n->turn + 1);
 	n->nbChildren++;
 
-	return child;
+	return n->children[(int)(n->nbChildren - 1)];
 }
 
 /**********************************
@@ -235,12 +236,14 @@ tree_t* createTree()
 {
 	tree_t* t = NULL;
 
-	if((t = malloc(sizeof(tree_t))) == NULL)
+	if((t = calloc(1, sizeof(tree_t))) == NULL)
 	{
 		perror("malloc createTree");
 		return NULL;
 	}
 
+	nbConfigurations = 0;
+	
 	return t;
 }
 
@@ -292,12 +295,12 @@ void computePossibilities(node_t* n, board_t* b)
 		return;
 	}
 	
-	int nextPawnValue = (n->turn + 2) / 2;
+	int nextPawnValue = (n->turn + 2) / 2, i;
 	
 	if(!(n->turn + 1) % 2)
 		nextPawnValue += 6;
 		
-	for(int i = 0; i < 13; i++)
+	for(i = 0; i < 13; i++)
 	{
 		if(b->board[i] == VOID_CELL)
 		{
@@ -312,7 +315,7 @@ void computePossibilities(node_t* n, board_t* b)
 int computeBlueVictories(node_t* n)
 {
 	int nb = 0;
-	/* A COMPLETER :
+	/* A COMPLETEuR :
 	*/
 	return nb;
 }
