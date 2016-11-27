@@ -19,6 +19,10 @@ int main(int argc, char** argv)
 	int nbDraws = computeDraws(t->root);
 	
 	printf("nb configuration: %d, nb blue victories: %d, nb red victories: %d, nb draws: %d\n",nbConfigurations,nbBlueVictories, nbRedVictories, nbDraws);
-	
+
+	free(t->root->children);
+	free(t->root);
+	free(t);
+	free(b);
 	return EXIT_SUCCESS;
 }

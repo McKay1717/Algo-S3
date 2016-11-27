@@ -188,16 +188,10 @@ node_t* createNode(int idCell, int turn)
 	
 	n->idCell = (char)idCell;
 	n->turn = (char)turn;
-	
-	if((n->children = malloc(sizeof(node_t*))) == NULL)
-	{
-		perror("malloc n->children createNode");
-		return NULL;
-	}
-	
+
 	if(turn == 1)
 	{
-		if((*n->children = calloc(1, sizeof(node_t))) == NULL)
+		if((n->children = calloc(1, sizeof(node_t*))) == NULL)
 		{
 			perror("malloc n->children 1 createNode");
 			return NULL;
@@ -205,14 +199,14 @@ node_t* createNode(int idCell, int turn)
 	}
 	else if(turn < 12)
 	{
-		if((*n->children = calloc((13 - turn), sizeof(node_t))) == NULL)
+		if((n->children = calloc((13 - turn), sizeof(node_t*))) == NULL)
 		{
 			perror("malloc n->children 2 createNode");
 			return NULL;
 		}
 	}
 	else
-		*n->children = NULL;
+		n->children = NULL;
 		
 	n->nbChildren = 0;
 	n->result = NO_RESULT;
@@ -336,4 +330,14 @@ int computeDraws(node_t* n)
 	return nb;
 }
 
-
+void printDiamond(board_t *b)
+{
+	int i;
+	
+	for(i = 0; i < 13; i++)
+	{
+		printf("%d ", b->board[i]);
+	}
+	
+	printf("\n");
+}

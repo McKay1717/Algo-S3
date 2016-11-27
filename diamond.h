@@ -69,4 +69,5 @@ int computeBlueVictories(node_t* n);
 int computeRedVictories(node_t* n);
 int computeDraws(node_t* n);
 
+void printDiamond(board_t *b);
 #endif
