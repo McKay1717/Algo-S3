@@ -8,7 +8,6 @@
 - On fait le total des valeurs des pions bleu et rouge autour de cette case vide.
 - Le gagnant est celui dont le total est le plus bas.
 
-
-Projet en C, IUT de Belfort-Montbéliard
+Sources disponibles en C et Java, IUT de Belfort-Montbéliard
 
 Copyright (c) - Raphaël RAGOOMUNDUN, Nicolas IUNG
