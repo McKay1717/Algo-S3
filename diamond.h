@@ -57,6 +57,7 @@ void setPawn(board_t* b, int idCell, char value);
 
 node_t* createNode(int idCell, int turn);
 node_t* addChild(node_t* n, int idCell);
+void freeNode(node_t *n);
 
 /* functions to manage the tree */
 

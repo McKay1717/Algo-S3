@@ -148,19 +148,21 @@ int voidCellIndex(board_t* b)
 
 void computeScore(board_t* b)
 {
-	int idVoid = voidCellIndex(b), i;
+	int idVoid, i;
 	
 	b->blueScore = 0;
 	b->redScore = 0;
 
+	idVoid = voidCellIndex(b);
+	
 	for(i = 0; i < 6; i++)
 	{
 		if(b->neighbors[idVoid][i] != NO_NEIGHBOR)
 		{
-			if(b->board[(int)b->neighbors[idVoid][i]] <= 6)
-				b->blueScore += b->board[(int)b->neighbors[idVoid][i]];
+			if(b->board[(int)(b->neighbors[idVoid][i])] <= 6)
+				b->blueScore += b->board[(int)(b->neighbors[idVoid][i])];
 			else
-				b->redScore += (b->board[(int)b->neighbors[idVoid][i]] - 6);
+				b->redScore += (b->board[(int)(b->neighbors[idVoid][i])] - 6);
 
 		}
 	}
@@ -241,6 +243,16 @@ tree_t* createTree()
 	return t;
 }
 
+void freeNode(node_t *n)
+{
+	int i;
+
+	if(!n->nbChildren)
+		free(n);
+
+	for(i = 0; i < n->nbChildren; i++)
+		freeNode(n->children[i]);
+}
 
 void setFirstBlueChoice(tree_t* t, board_t* b, int idCell)
 {
@@ -308,25 +320,40 @@ void computePossibilities(node_t* n, board_t* b)
 
 int computeBlueVictories(node_t* n)
 {
-	int nb = 0;
-	/* A COMPLETEuR :
-	*/
+	int nb = 0, i;
+
+	if(!n->nbChildren && n->result == BLUE_WINS)
+		nb++;
+
+	for(i = 0; i < n->nbChildren; i++)
+		nb += computeBlueVictories(n->children[i]);
+	
 	return nb;
 }
 
 int computeRedVictories(node_t* n)
 {
-	int nb = 0;
-	/* A COMPLETER :
-	*/
+	int nb = 0, i;
+
+	if(!n->nbChildren && n->result == RED_WINS)
+		nb++;
+
+	for(i = 0; i < n->nbChildren; i++)
+		nb += computeRedVictories(n->children[i]);
+	
 	return nb;
 }
 
 int computeDraws(node_t* n)
 {
-	int nb = 0;
-	/* A COMPLETER :
-	*/
+	int nb = 0, i;
+
+	if(!n->nbChildren && n->result == DRAW_PARTY)
+		nb++;
+
+	for(i = 0; i < n->nbChildren; i++)
+		nb += computeDraws(n->children[i]);
+	
 	return nb;
 }
 
