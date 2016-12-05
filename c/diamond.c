@@ -247,11 +247,10 @@ void freeNode(node_t *n)
 {
 	int i;
 
-	if(!n->nbChildren)
-		free(n);
-
 	for(i = 0; i < n->nbChildren; i++)
 		freeNode(n->children[i]);
+
+	free(n);
 }
 
 void setFirstBlueChoice(tree_t* t, board_t* b, int idCell)
