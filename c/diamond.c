@@ -193,7 +193,7 @@ node_t* createNode(int idCell, int turn)
 
 	if(turn == 1)
 	{
-		if((n->children = calloc(1, sizeof(node_t*))) == NULL)
+		if((n->children = malloc(1 * sizeof(node_t*))) == NULL)
 		{
 			perror("malloc n->children 1 createNode");
 			return NULL;
@@ -201,7 +201,7 @@ node_t* createNode(int idCell, int turn)
 	}
 	else if(turn < 12)
 	{
-		if((n->children = calloc((13 - turn), sizeof(node_t*))) == NULL)
+		if((n->children = malloc((13 - turn) * sizeof(node_t*))) == NULL)
 		{
 			perror("malloc n->children 2 createNode");
 			return NULL;
@@ -303,7 +303,7 @@ void computePossibilities(node_t* n, board_t* b)
 	
 	int nextPawnValue = (n->turn + 2) / 2, i;
 	
-	if(!(n->turn + 1) % 2)
+	if(!((n->turn + 1) % 2))
 		nextPawnValue += 6;
 		
 	for(i = 0; i < 13; i++)
@@ -312,6 +312,7 @@ void computePossibilities(node_t* n, board_t* b)
 		{
 			setPawn(b, i, (char)nextPawnValue);
 			node_t *child = addChild(n, i);
+
 			computePossibilities(child, b);
 			setPawn(b, i, VOID_CELL);
 		}
