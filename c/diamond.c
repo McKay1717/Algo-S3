@@ -13,9 +13,9 @@ board_t* createBoard()
 	board_t* b = NULL;
 	int i, j;
 	
-	if((b = malloc(sizeof(board_t))) == NULL)
+	if((b = calloc(1, sizeof(board_t))) == NULL)
 	{
-		perror("malloc createBoard");
+		perror("calloc createBoard");
 		return NULL;
 	}
 
@@ -182,9 +182,9 @@ node_t* createNode(int idCell, int turn)
 {
 	node_t* n = NULL;
 	
-	if((n = malloc(sizeof(node_t))) == NULL)
+	if((n = calloc(1, sizeof(node_t))) == NULL)
 	{
-		perror("malloc createNode");
+		perror("calloc createNode");
 		return NULL;
 	}
 	
@@ -195,7 +195,7 @@ node_t* createNode(int idCell, int turn)
 	{
 		if((n->children = calloc(1, sizeof(node_t*))) == NULL)
 		{
-			perror("malloc n->children 1 createNode");
+			perror("calloc n->children 1 createNode");
 			return NULL;
 		}
 	}
@@ -203,7 +203,7 @@ node_t* createNode(int idCell, int turn)
 	{
 		if((n->children = calloc((13 - turn), sizeof(node_t*))) == NULL)
 		{
-			perror("malloc n->children 2 createNode");
+			perror("calloc n->children 2 createNode");
 			return NULL;
 		}
 	}
@@ -234,7 +234,7 @@ tree_t* createTree()
 
 	if((t = calloc(1, sizeof(tree_t))) == NULL)
 	{
-		perror("malloc createTree");
+		perror("calloc createTree");
 		return NULL;
 	}
 
