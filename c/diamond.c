@@ -193,7 +193,7 @@ node_t* createNode(int idCell, int turn)
 
 	if(turn == 1)
 	{
-		if((n->children = malloc(1 * sizeof(node_t*))) == NULL)
+		if((n->children = calloc(1, sizeof(node_t*))) == NULL)
 		{
 			perror("malloc n->children 1 createNode");
 			return NULL;
@@ -201,7 +201,7 @@ node_t* createNode(int idCell, int turn)
 	}
 	else if(turn < 12)
 	{
-		if((n->children = malloc((13 - turn) * sizeof(node_t*))) == NULL)
+		if((n->children = calloc((13 - turn), sizeof(node_t*))) == NULL)
 		{
 			perror("malloc n->children 2 createNode");
 			return NULL;
